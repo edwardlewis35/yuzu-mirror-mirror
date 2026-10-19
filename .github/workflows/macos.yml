@@ -26,7 +26,6 @@ jobs:
     timeout-minutes: 120
     env:
       QT5_PREFIX: /opt/homebrew/opt/qt@5
-      FMT_PREFIX: ${{ runner.temp }}/fmt
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -46,7 +45,7 @@ jobs:
           cmake -S fmt-9.1.0 -B fmt-build -G Ninja \
             -DCMAKE_BUILD_TYPE=Release -DFMT_TEST=OFF \
             -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
-            -DCMAKE_INSTALL_PREFIX="$FMT_PREFIX"
+            -DCMAKE_INSTALL_PREFIX="$RUNNER_TEMP/fmt"
           cmake --build fmt-build --parallel
           cmake --install fmt-build
 
@@ -56,7 +55,7 @@ jobs:
             -DCMAKE_BUILD_TYPE=Release \
             -DCMAKE_OSX_ARCHITECTURES=arm64 \
             -DCMAKE_OSX_DEPLOYMENT_TARGET=13.0 \
-            -DCMAKE_PREFIX_PATH="$QT5_PREFIX;$FMT_PREFIX" \
+            -DCMAKE_PREFIX_PATH="$QT5_PREFIX;$RUNNER_TEMP/fmt" \
             -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
             -DYUZU_TESTS=OFF \
             -DENABLE_QT_TRANSLATION=OFF \
